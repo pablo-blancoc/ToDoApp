@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -46,5 +48,26 @@ public class MainActivity extends AppCompatActivity {
 
         // Set LayoutManager (how items are displayed) -> default: vertical
         rvItems.setLayoutManager(new LinearLayoutManager(this));
+
+        // Add an EventListener to our addButton
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // When button is clicked get the input text and convert it to string
+                String item = newItem.getText().toString();
+
+                // Add item to the model
+                items.add(item);
+
+                // Notify adapter that an item is inserted
+                itemsAdapter.notifyItemInserted(items.size() - 1);
+
+                // Clear the input text
+                newItem.setText("");
+
+                // Let the user know an item was added by using a toast
+                Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
