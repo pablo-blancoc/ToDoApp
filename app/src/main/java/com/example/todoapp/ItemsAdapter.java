@@ -14,12 +14,18 @@ import java.util.List;
 // It is responsible for taking the data an putting it into the view holder
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
 
+    public interface OnLongClickListener {
+        void onItemLongClick(int position);
+    }
+
     // Class attribute for the items of the list
     List<String> items;
+    OnLongClickListener longClickListener;
 
     // Constructor for the class
-    public ItemsAdapter(List<String> items) {
+    public ItemsAdapter(List<String> items, OnLongClickListener LongClickListener) {
         this.items = items;
+        this.longClickListener = LongClickListener;
     }
 
     @NonNull
@@ -65,6 +71,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         // Update the view inside of the ViewHolder
         public void bind(String item) {
             this.tvItem.setText(item);
+
+            // Set a Listener to whenever the ViewHolder (item) is Long Clicked
+            this.tvItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    // Notify the listener which position was long pressed
+                    longClickListener.onItemLongClick(getAdapterPosition());
+                    return true;
+                }
+            });
         }
     }
 }

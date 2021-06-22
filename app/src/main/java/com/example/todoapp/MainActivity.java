@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Define the list of the items to-do (strings)
     List<String> items;
+    ItemsAdapter itemsAdapter;
 
     // Define references from view page
     FloatingActionButton addButton;
@@ -40,8 +41,23 @@ public class MainActivity extends AppCompatActivity {
         items.add("Thing 2");
         items.add("Thing 3");
 
+        // Create a new instance of the LongClickListener and override what it does when an item is long pressed
+        ItemsAdapter.OnLongClickListener onLongClickListener = new ItemsAdapter.OnLongClickListener() {
+            @Override
+            public void onItemLongClick(int position) {
+                // Delete an item from the list
+                items.remove(position);
+
+                // Notify the adapter that an item has been removed
+                itemsAdapter.notifyItemRemoved(position);
+
+                // Let the user know an item was removed by using a toast
+                Toast.makeText(getApplicationContext(), "Item removed", Toast.LENGTH_LONG).show();
+            }
+        };
+
         // Construct our adapter
-        ItemsAdapter itemsAdapter = new ItemsAdapter(this.items);
+        this.itemsAdapter = new ItemsAdapter(this.items, onLongClickListener);
 
         // Set our adapter in our RecyclerView
         rvItems.setAdapter(itemsAdapter);
