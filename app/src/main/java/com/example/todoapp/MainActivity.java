@@ -5,12 +5,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +41,8 @@ public class MainActivity extends AppCompatActivity {
         newItem = findViewById(R.id.newItem);
         rvItems = findViewById(R.id.rvItems);
 
-        // Instantiate our items list
-        items = new ArrayList<>();
-        items.add("Thing 1");
-        items.add("Thing 2");
-        items.add("Thing 3");
+        // Populate our items list
+        this.loadItems();
 
         // Create a new instance of the LongClickListener and override what it does when an item is long pressed
         ItemsAdapter.OnLongClickListener onLongClickListener = new ItemsAdapter.OnLongClickListener() {
@@ -53,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // Let the user know an item was removed by using a toast
                 Toast.makeText(getApplicationContext(), "Item removed", Toast.LENGTH_LONG).show();
+
+                // Save changes
+                saveItems();
             }
         };
 
@@ -83,7 +89,34 @@ public class MainActivity extends AppCompatActivity {
 
                 // Let the user know an item was added by using a toast
                 Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_LONG).show();
+
+                // Save changes
+                saveItems();
             }
         });
+    }
+
+    private File getDataFile() {
+        // Return the file with the data from the app
+        return new File(getFilesDir(), "data.txt");
+    }
+
+    private void loadItems() {
+        // Load items by reading every line of the data file
+        try {
+            this.items = new ArrayList<>(FileUtils.readLines(this.getDataFile(), Charset.defaultCharset()));
+        } catch (IOException e) {
+            Log.e("MainActivity", "Error reading items from data file", e);
+            this.items = new ArrayList<>();
+        }
+    }
+
+    private void saveItems() {
+        // Save items by writing them into a file
+        try {
+            FileUtils.writeLines(this.getDataFile(), items);
+        } catch (IOException e) {
+            Log.e("MainActivity", "Error writing items to data file", e);
+        }
     }
 }
