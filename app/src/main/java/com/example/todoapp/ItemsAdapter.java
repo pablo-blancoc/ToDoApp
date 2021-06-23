@@ -18,14 +18,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         void onItemLongClick(int position);
     }
 
+    public interface OnClickListener {
+        void onItemClick(int position);
+    }
+
     // Class attribute for the items of the list
     List<String> items;
     OnLongClickListener longClickListener;
+    OnClickListener clickListener;
 
     // Constructor for the class
-    public ItemsAdapter(List<String> items, OnLongClickListener LongClickListener) {
+    public ItemsAdapter(List<String> items, OnLongClickListener longClickListener, OnClickListener clickListener) {
         this.items = items;
-        this.longClickListener = LongClickListener;
+        this.longClickListener = longClickListener;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -79,6 +85,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
                     // Notify the listener which position was long pressed
                     longClickListener.onItemLongClick(getAdapterPosition());
                     return true;
+                }
+            });
+
+            // Set a Listener to whenever the item is single-clicked to edit it
+            this.tvItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Notify the listener which position was clicked
+                    clickListener.onItemClick(getAdapterPosition());
                 }
             });
         }

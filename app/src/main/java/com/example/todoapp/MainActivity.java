@@ -1,9 +1,11 @@
 package com.example.todoapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,10 +33,16 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rvItems;
     EditText newItem;
 
+    // Define keys for passing data
+    public static final String KEY_ITEM_TEXT = "item_text";
+    public static final String KEY_ITEM_POSITION = "item_position";
+    public static final int EDIT_TEXT_CODE = 20;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setTitle("ToDo App");
 
         // Instantiate variables from references from the views
         addButton = findViewById(R.id.addButton);
@@ -62,8 +70,24 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        // Create an instance for the ClickListener to edit an object
+        ItemsAdapter.OnClickListener onClickListener = new ItemsAdapter.OnClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                // Create the new activity using an intent
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+
+                // Pass data in our intent
+                intent.putExtra(KEY_ITEM_TEXT, items.get(position));
+                intent.putExtra(KEY_ITEM_POSITION, position);
+
+                // Display the activity
+                startActivityForResult(intent, EDIT_TEXT_CODE);
+            }
+        };
+
         // Construct our adapter
-        this.itemsAdapter = new ItemsAdapter(this.items, onLongClickListener);
+        this.itemsAdapter = new ItemsAdapter(this.items, onLongClickListener, onClickListener);
 
         // Set our adapter in our RecyclerView
         rvItems.setAdapter(itemsAdapter);
@@ -94,6 +118,34 @@ public class MainActivity extends AppCompatActivity {
                 saveItems();
             }
         });
+    }
+
+    // Handle the result from the edit activity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_CODE) {
+            // Retrieved new name of object
+            String newItemName = data.getStringExtra(KEY_ITEM_TEXT);
+
+            // Retrieve original position on list of the object
+            int position = data.getExtras().getInt(KEY_ITEM_POSITION);
+
+            // Update the model at the right position
+            items.set(position, newItemName);
+
+            // Notify the adapter that there has been a change
+            itemsAdapter.notifyItemChanged(position);
+
+            // Let the user know an item was updated
+            Toast.makeText(getApplicationContext(), "Item updated successfully!", Toast.LENGTH_LONG).show();
+
+            // Save changes
+            saveItems();
+        } else {
+            Log.w("MainActivity", "Unknown call to onActivityResult");
+        }
     }
 
     private File getDataFile() {
