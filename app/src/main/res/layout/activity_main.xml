@@ -16,6 +16,7 @@
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
         android:clickable="true"
+        android:focusable="true"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
     <EditText
@@ -32,15 +33,27 @@
         android:hint="Add an item here!"
         android:inputType="textPersonName" />
 
+    <TextView
+        android:id="@+id/todoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="Things to do"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItems"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="594dp"
         android:layout_above="@+id/newItem"
+        android:layout_below="@+id/todoText"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp" />
 </RelativeLayout>
 

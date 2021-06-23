@@ -102,6 +102,12 @@ public class MainActivity extends AppCompatActivity {
                 // When button is clicked get the input text and convert it to string
                 String item = newItem.getText().toString();
 
+                // Do not add empty items
+                if(item.equals("")) {
+                    Toast.makeText(getApplicationContext(), "Cannot add empty item", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 // Add item to the model
                 items.add(item);
 
