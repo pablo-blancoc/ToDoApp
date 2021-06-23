@@ -47,7 +47,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItems"
         android:layout_width="match_parent"
-        android:layout_height="594dp"
+        android:layout_height="match_parent"
         android:layout_above="@+id/newItem"
         android:layout_below="@+id/todoText"
         android:layout_alignParentStart="true"
